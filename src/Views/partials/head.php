@@ -17,7 +17,7 @@
     <nav class="navbar navbar-expand-lg myNav">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">
-                <img src="/public/./img/./téléchargement.jfif" alt="Logo" width="50" height="50"> Task'n'Kids
+                <img src="/config/../public/img/./téléchargement.jfif" alt="Logo" width="50" height="50"> Task'n'Kids
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -26,7 +26,14 @@
                 <ul class="navbar-nav">
                     <?php
                     if (isset($_SESSION['user'])) {
+                        if ($_SESSION['user']['idRole'] == 1) {
                     ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/addTask">Créer tâche</a>
+                            </li>
+                        <?php
+                        }
+                        ?>
                         <li class="nav-item">
                             <a class="nav-link" href="/logout">Déconnexion</a>
                         </li>

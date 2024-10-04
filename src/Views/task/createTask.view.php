@@ -53,6 +53,14 @@ require_once(__DIR__ . '/../partials/head.php');
     </div>
 </form>
 
+<?php 
+    function affichage(){
+        ;
+    }
+
+
+?>
+
 <?php
 require_once(__DIR__ . '/../partials/footer.php');
 ?>

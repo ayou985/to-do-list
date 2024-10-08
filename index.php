@@ -19,5 +19,10 @@ $router->addRoute('/logout', 'LogoutController', 'logout');
 //Les tâches:
 $router->addRoute('/addTask', 'TaskController', 'createTask');
 $router->addRoute('/task', 'TaskController', 'index');
+$router->addRoute('/editTask', 'TaskController', 'editTask');
+$router->addRoute('/deleteTask', 'TaskController', 'deleteTask');
+$router->addRoute('/deleteTaskAndTodo', 'TaskController', 'deleteTaskAndTodo');
+$router->addRoute('/assignTask', 'TaskController', 'addKidTask');
+$router->addRoute('/updateAssignTask', 'TaskController', 'updateTodoTask');
 
 $router->handleRequest();

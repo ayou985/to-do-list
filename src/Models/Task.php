@@ -17,9 +17,10 @@ class Task
     protected ?int $id_user;
     protected ?string $status;
     protected ?string $pseudo;
+    protected ?int $idKid;
 
 
-    public function __construct(?int $id, ?string $title, ?string $content, ?string $creation_date, ?string $start_task, ?string $stop_task, ?int $point, ?int $id_user, ?string $status, ?string $pseudo)
+    public function __construct(?int $id, ?string $title, ?string $content, ?string $creation_date, ?string $start_task, ?string $stop_task, ?int $point, ?int $id_user, ?string $status, ?string $pseudo, ?int $idKid)
     {
         $this->id = $id;
         $this->title = $title;
@@ -31,6 +32,7 @@ class Task
         $this->id_user = $id_user;
         $this->status = $status;
         $this->pseudo = $pseudo;
+        $this->idKid = $idKid;
     }
 
     public function addTask(): bool
@@ -55,7 +57,7 @@ class Task
         $resultFetch = $statement->fetchAll(PDO::FETCH_ASSOC);
         $tasks = [];
         foreach ($resultFetch as $row) {
-            $task = new Task($row['id'], $row['title'], null, null, $row['start_task'], $row['stop_task'], null, null, null, null);
+            $task = new Task($row['id'], $row['title'], null, null, $row['start_task'], $row['stop_task'], null, null, null, null, null);
             $tasks[] = $task;
         }
         return $tasks;
@@ -76,7 +78,7 @@ class Task
         $resultFetch = $statement->fetchAll(PDO::FETCH_ASSOC);
         $tasks = [];
         foreach ($resultFetch as $row) {
-            $task = new Task($row['id'], $row['title'], null, null, $row['start_task'], $row['stop_task'], null, null, null, $row['pseudo']);
+            $task = new Task($row['id'], $row['title'], null, null, $row['start_task'], $row['stop_task'], null, null, null, $row['pseudo'], null);
             $tasks[] = $task;
         }
         return $tasks;
@@ -90,11 +92,54 @@ class Task
         $statement->execute([$this->id]);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
         if ($row) {
-            return new Task($row['id'], $row['title'], $row['content'], $row['creation_date'], $row['start_task'], $row['stop_task'], $row['point'], $row['id_user'], $row['status'], $row['pseudo']);
+            return new Task($row['id'], $row['title'], $row['content'], $row['creation_date'], $row['start_task'], $row['stop_task'], $row['point'], $row['id_user'], $row['status'], $row['pseudo'], null);
         } else {
             return null;
         }
     }
+
+    public function updateTask()
+    {
+        $pdo = DataBase::getConnection();
+        $sql = "UPDATE `task` 
+        SET `title` = ?, `content` = ?, `start_task` = ?, `stop_task` = ?, `point` = ?
+        WHERE `task`.`id` = ?";
+        $statement = $pdo->prepare($sql);
+        return $statement->execute([$this->title, $this->content, $this->start_task, $this->stop_task, $this->point, $this->id]);
+    }
+
+    public function deleteTask()
+    {
+        $pdo = DataBase::getConnection();
+        $sql = 'DELETE FROM `task` WHERE `id` = ?';
+        $statement = $pdo->prepare($sql);
+        return $statement->execute([$this->id]);
+    }
+
+    public function deleteTodo()
+    {
+        $pdo = DataBase::getConnection();
+        $sql = "DELETE FROM `todo` WHERE `id_task` = ?";
+        $statement = $pdo->prepare($sql);
+        return $statement->execute([$this->id]);
+    }
+
+    public function addTodo()
+    {
+        $pdo = DataBase::getConnection();
+        $sql = "INSERT INTO `todo` (`status`, `id_user`, `id_task`) VALUES (?,?,?)";
+        $statement = $pdo->prepare($sql);
+        return $statement->execute([$this->status, $this->idKid, $this->id]);
+    }
+
+    public function updateTodo()
+    {
+        $pdo = DataBase::getConnection();
+        $sql = "UPDATE `todo` SET `todo`.`status` = ?, `todo`.`id_user` = ? WHERE `todo`.`id_task`= ?";
+        $statement = $pdo->prepare($sql);
+        return $statement->execute([$this->status, $this->idKid, $this->id]);
+    }
+
 
     public function getId(): ?int
     {
@@ -142,6 +187,11 @@ class Task
     public function getPseudo(): ?string
     {
         return $this->pseudo;
+    }
+
+    public function getIdKid(): ?int
+    {
+        return $this->idKid;
     }
 
     public function setId(?int $id): static
@@ -201,6 +251,12 @@ class Task
     public function setPseudo(?string $pseudo): static
     {
         $this->pseudo = $pseudo;
+        return $this;
+    }
+
+    public function setIdKid(?int $idKid): static
+    {
+        $this->idKid = $idKid;
         return $this;
     }
 }
